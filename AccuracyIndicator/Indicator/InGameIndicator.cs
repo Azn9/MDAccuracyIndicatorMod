@@ -36,12 +36,12 @@ public class InGameIndicator : MonoBehaviour
         _canvas.AddComponent<GraphicRaycaster>();
         _canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
 
-        // -0.14 | -0.04 | -0.025 | 0.025 | 0.04 | 0.14
+        // -0.14 | -0.05 | -0.025 | 0.025 | 0.05 | 0.14
         // Total length: 0.28 = 730px
-        // Ok : 0.08 = 208px
+        // Ok : 0.1 = 260px
         // Perfect : 0.05 = 130px
         
-        Utils.CreateBars(_canvas, 0, DefaultY, 730, 208, 130);
+        Utils.CreateBars(_canvas, 0, DefaultY, 730, 260, 130);
 
         var arrow = new GameObject("Arrow");
         arrow.transform.SetParent(_canvas.transform);
@@ -76,7 +76,7 @@ public class InGameIndicator : MonoBehaviour
         var color = time switch
         {
             < 0.025f and > -0.025f => new Color(0, 0.73F, 0.83F),
-            < 0.04f and > -0.04f => new Color(0.29F, 0.68F, 0.31F),
+            < 0.05f and > -0.05f => new Color(0.29F, 0.68F, 0.31F),
             _ => new Color(1f, 0.59F, 0)
         };
 
@@ -90,19 +90,19 @@ public class InGameIndicator : MonoBehaviour
 
         _hitEntries.Add(new HitEntry(Time.time, time, hitIndicator, hitRi));
 
-        if (time is >= -0.14f and <= 0.14f)
-        {
-            // -140 = 0
-            // -135 = 1
-            // ...
+        if (time is < -0.14f or > 0.14f) 
+            return;
+        
+        // -140 = 0
+        // -135 = 1
+        // ...
             
-            // time * 1000 is >= -140 and <= 140
-            // (time * 1000) / 5 is >= -28 and <= 28
-            // (time * 1000) / 5 + 28 is >= 0 and <= 56
+        // time * 1000 is >= -140 and <= 140
+        // (time * 1000) / 5 is >= -28 and <= 28
+        // (time * 1000) / 5 + 28 is >= 0 and <= 56
             
-            var timeRange = (int)(time * 1000) / 5 + 28;
-            _hitReport[timeRange].Cast<ReportRange>().Amount++;
-        }
+        var timeRange = (int)(time * 1000) / 5 + 28;
+        _hitReport[timeRange].Cast<ReportRange>().Amount++;
     }
 
     private void Update()

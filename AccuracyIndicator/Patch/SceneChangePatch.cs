@@ -24,7 +24,11 @@ public static class SceneChangePatch
         {
             case "GameMain":
                 if (Main.IndicatorObj != null)
+                {
                     Object.Destroy(Main.IndicatorObj);
+                    Main.IndicatorObj = null;
+                }
+
                 break;
         }
     }
@@ -39,7 +43,7 @@ public static class SceneChangePatch
             var report = Main.InGameIndicator.GetReport();
 
             Object.Destroy(Main.InGameIndicator);
-            
+
             var victoryIndicator = Main.IndicatorObj.AddComponent<VictoryIndicator>();
             
             victoryIndicator.SetMeanDelay(meanDelay);
@@ -54,6 +58,7 @@ public static class SceneChangePatch
         private static void Postfix()
         {
             Object.Destroy(Main.IndicatorObj);
+            Main.IndicatorObj = null;
         }
     }
     

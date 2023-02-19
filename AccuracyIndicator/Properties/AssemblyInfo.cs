@@ -34,7 +34,7 @@ using Main = AccuracyIndicator.Main;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
 
-[assembly: MelonInfo(typeof(Main), "Accuracy Indicator", "1.0.0", "Azn9", "https://github.com/Azn9/MDAccuracyIndicatorMod")]
+[assembly: MelonInfo(typeof(Main), "Accuracy Indicator", "1.1.0", "Azn9", "https://github.com/Azn9/MDAccuracyIndicatorMod")]
 [assembly: MelonGame("PeroPeroGames", "MuseDash")]

@@ -94,7 +94,7 @@ public class VictoryIndicator : MonoBehaviour
             ri.color = time switch
             {
                 < 0.025f and > -0.025f => new Color(0, 0.73F, 0.83F),
-                < 0.04f and > -0.04f => new Color(0.29F, 0.68F, 0.31F),
+                < 0.05f and > -0.05f => new Color(0.29F, 0.68F, 0.31F),
                 _ => new Color(1f, 0.59F, 0)
             };
 
