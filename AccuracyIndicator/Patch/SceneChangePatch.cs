@@ -1,23 +1,11 @@
-﻿using HarmonyLib;
-using AccuracyIndicator.Indicator;
+﻿using AccuracyIndicator.Indicator;
+using HarmonyLib;
 using UnityEngine;
 
 namespace AccuracyIndicator.Patch;
 
 public static class SceneChangePatch
 {
-    
-    public static void OnSceneWasLoaded(string sceneName)
-    {
-        switch (sceneName)
-        {
-            case "GameMain":
-                Main.IndicatorObj = new GameObject("Indicator");
-                Main.InGameIndicator = Main.IndicatorObj.AddComponent<InGameIndicator>();
-                break;
-        }
-    }
-    
     public static void OnSceneWasUnloaded(string sceneName)
     {
         switch (sceneName)

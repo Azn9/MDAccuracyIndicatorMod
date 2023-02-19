@@ -93,7 +93,7 @@ public class InGameIndicator : MonoBehaviour
 
         _hitEntries.Add(new HitEntry(Time.time, time, hitIndicator, hitRi));
 
-        if (time is < -0.14f or > 0.14f) 
+        if (time is < -0.13f or > 0.13f)
             return;
         
         // -140 = 0
