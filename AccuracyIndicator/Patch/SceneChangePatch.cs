@@ -18,6 +18,9 @@ public static class SceneChangePatch
     {
         private static void Postfix()
         {
+            if (Main.InGameIndicator is null) // Patch may be called twice
+                return;
+            
             var meanDelay = Main.InGameIndicator.GetMeanDelay();
             var report = Main.InGameIndicator.GetReport();
 
