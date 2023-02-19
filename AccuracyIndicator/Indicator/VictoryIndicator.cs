@@ -13,6 +13,7 @@ public class VictoryIndicator : MonoBehaviour
     {
     }
 
+    private readonly List<Object> _antiGC = new();
     private GameObject _canvas;
     private Text _text;
     private bool _rendered;
@@ -21,6 +22,8 @@ public class VictoryIndicator : MonoBehaviour
 
     private void Start()
     {
+        _antiGC.Add(this);
+        
         _canvas = new GameObject("Canvas");
         _canvas.AddComponent<Canvas>();
         _canvas.AddComponent<CanvasScaler>();
@@ -43,6 +46,7 @@ public class VictoryIndicator : MonoBehaviour
 
     private void OnDestroy()
     {
+        _antiGC.Remove(this);
         Destroy(_canvas);
     }
 

@@ -14,6 +14,7 @@ public class InGameIndicator : MonoBehaviour
     
     private static readonly float DefaultY = -Utils.ConvertHeightFrom1080P(420);
 
+    private readonly List<Object> _antiGC = new();
     private readonly List<Object> _hitEntries = new();
     private readonly List<Object> _hitReport = new();
     private GameObject _canvas;
@@ -25,6 +26,8 @@ public class InGameIndicator : MonoBehaviour
 
     private void Start()
     {
+        _antiGC.Add(this);
+        
         for (float i = -140; i < 140; i += 5)
         {
             _hitReport.Add(new ReportRange());
@@ -165,6 +168,7 @@ public class InGameIndicator : MonoBehaviour
 
     private void OnDestroy()
     {
+        _antiGC.Remove(this);
         Destroy(_canvas);
     }
 
