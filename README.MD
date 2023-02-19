@@ -15,4 +15,4 @@ Simply grab the latest .dll from the [**releases**](https://github.com/Azn9/MDAc
 ## What does the color mean?
 - Blue is 'Perfect' judgement (from -25ms to +25ms)
 - Green is 'Perfect' judgement with "late" or "early" displayed (from -50ms to +50ms)
-- Orange is 'Great' judgement (from -140ms to +140ms)
+- Orange is 'Great' judgement (from -130ms to +130ms)

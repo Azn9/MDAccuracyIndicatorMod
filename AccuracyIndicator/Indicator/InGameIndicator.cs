@@ -28,7 +28,7 @@ public class InGameIndicator : MonoBehaviour
     {
         _antiGC.Add(this);
         
-        for (float i = -140; i < 140; i += 5)
+        for (float i = -130; i < 130; i += 5)
         {
             _hitReport.Add(new ReportRange());
         }
@@ -39,12 +39,12 @@ public class InGameIndicator : MonoBehaviour
         _canvas.AddComponent<GraphicRaycaster>();
         _canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
 
-        // -0.14 | -0.05 | -0.025 | 0.025 | 0.05 | 0.14
-        // Total length: 0.28 = 730px
-        // Ok : 0.1 = 260px
-        // Perfect : 0.05 = 130px
-        
-        Utils.CreateBars(_canvas, 0, DefaultY, 730, 260, 130);
+        // -0.13 | -0.05 | -0.025 | 0.025 | 0.05 | 0.13
+        // Total length: 0.26 = 730px
+        // Ok : 0.1 = 280px
+        // Perfect : 0.05 = 140px
+
+        Utils.CreateBars(_canvas, 0, DefaultY, 730, 280, 140);
 
         var arrow = new GameObject("Arrow");
         arrow.transform.SetParent(_canvas.transform);
@@ -71,10 +71,13 @@ public class InGameIndicator : MonoBehaviour
 
     public void AddHit(float time)
     {
+        if (time is < -0.13f or > 0.13f)
+            return;
+    
         _totalDelay += time;
         _totalHits++;
 
-        var x = Utils.ConvertWidthFrom1920P(time / 0.28f * 730f);
+        var x = Utils.ConvertWidthFrom1920P(time / 0.26f * 730f);
 
         var color = time switch
         {
@@ -93,18 +96,15 @@ public class InGameIndicator : MonoBehaviour
 
         _hitEntries.Add(new HitEntry(Time.time, time, hitIndicator, hitRi));
 
-        if (time is < -0.14f or > 0.14f) 
-            return;
-        
-        // -140 = 0
-        // -135 = 1
+        // -130 = 0
+        // -125 = 1
         // ...
             
-        // time * 1000 is >= -140 and <= 140
-        // (time * 1000) / 5 is >= -28 and <= 28
-        // (time * 1000) / 5 + 28 is >= 0 and <= 56
+        // time * 1000 is >= -130 and <= 130
+        // (time * 1000) / 5 is >= -26 and <= 26
+        // (time * 1000) / 5 + 26 is >= 0 and <= 52
             
-        var timeRange = (int)(time * 1000) / 5 + 28;
+        var timeRange = (int)(time * 1000) / 5 + 26;
         _hitReport[timeRange].Cast<ReportRange>().Amount++;
     }
 
@@ -157,7 +157,7 @@ public class InGameIndicator : MonoBehaviour
         }
 
         var meanDelay = countDelay == 0 ? 0 : totalDelay / countDelay;
-        var x = Utils.ConvertWidthFrom1920P(meanDelay / 0.28f * 730f);
+        var x = Utils.ConvertWidthFrom1920P(meanDelay / 0.26f * 730f);
 
         var position = _arrowRt.anchoredPosition;
         var newPosition = new Vector2(x, position.y);

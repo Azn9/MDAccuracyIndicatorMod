@@ -10,7 +10,7 @@ public abstract class PauseResumePatch
     {
         private static void Postfix()
         {
-            if (Main.InGameIndicator != null)
+            if (Main.InGameIndicator is not null)
                 Main.InGameIndicator.Pause();
         }
     }
@@ -20,7 +20,7 @@ public abstract class PauseResumePatch
     {
         private static void Postfix()
         {
-            if (Main.InGameIndicator != null)
+            if (Main.InGameIndicator is not null)
                 Main.InGameIndicator.Resume();
         }
     }

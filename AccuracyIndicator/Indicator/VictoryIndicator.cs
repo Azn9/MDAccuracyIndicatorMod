@@ -72,22 +72,22 @@ public class VictoryIndicator : MonoBehaviour
 
         Utils.CreateBars(_canvas, Utils.ConvertWidthFrom1920P(-650), Utils.ConvertHeightFrom1080P(230), 600, 171, 106);
 
-        int max = 0;
+        var max = 0;
 
-        for (float i = -140; i < 140; i += 5)
+        for (float i = -130; i < 130; i += 5)
         {
             var time = i / 1000f;
-            var timeRange = (int)(time * 1000) / 5 + 28;
+            var timeRange = (int)(time * 1000) / 5 + 26;
             var hits = _report[timeRange].Cast<ReportRange>();
 
             if (hits.Amount > max)
                 max = hits.Amount;
         }
 
-        for (float i = -140; i < 140; i += 5)
+        for (float i = -130; i < 130; i += 5)
         {
             var time = i / 1000f;
-            var timeRange = (int)(time * 1000) / 5 + 28;
+            var timeRange = (int)(time * 1000) / 5 + 26;
             var hits = _report[timeRange].Cast<ReportRange>();
 
             var bar = new GameObject($"Bar {time}");

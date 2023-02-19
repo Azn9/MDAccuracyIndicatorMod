@@ -21,9 +21,6 @@ public class Main : MelonMod
         HarmonyInstance.PatchAll();
     }
 
-    public override void OnSceneWasLoaded(int buildIndex, string sceneName) =>
-        SceneChangePatch.OnSceneWasLoaded(sceneName);
-
     public override void OnSceneWasUnloaded(int buildIndex, string sceneName) =>
         SceneChangePatch.OnSceneWasUnloaded(sceneName);
 

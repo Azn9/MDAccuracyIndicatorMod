@@ -33,8 +33,8 @@ using Main = AccuracyIndicator.Main;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.0.0")]
-[assembly: AssemblyFileVersion("1.2.0.0")]
+[assembly: AssemblyVersion("1.3.0")]
+[assembly: AssemblyFileVersion("1.3.0")]
 
-[assembly: MelonInfo(typeof(Main), "Accuracy Indicator", "1.2.0", "Azn9", "https://github.com/Azn9/MDAccuracyIndicatorMod")]
+[assembly: MelonInfo(typeof(Main), "Accuracy Indicator", "1.3.0", "Azn9", "https://github.com/Azn9/MDAccuracyIndicatorMod")]
 [assembly: MelonGame("PeroPeroGames", "MuseDash")]
