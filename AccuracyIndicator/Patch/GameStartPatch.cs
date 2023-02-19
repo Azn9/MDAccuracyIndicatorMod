@@ -10,8 +10,8 @@ namespace AccuracyIndicator.Patch
     {
         private static void Postfix()
         {
-            Main.IndicatorObj = new GameObject("Indicator");
-            Main.InGameIndicator = Main.IndicatorObj.AddComponent<InGameIndicator>();
+            Main.IndicatorObj ??= new GameObject("Indicator");
+            Main.InGameIndicator ??= Main.IndicatorObj.AddComponent<InGameIndicator>();
         }
     }
 }
