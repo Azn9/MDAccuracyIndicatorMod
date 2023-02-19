@@ -39,11 +39,11 @@ public class InGameIndicator : MonoBehaviour
         _canvas.AddComponent<GraphicRaycaster>();
         _canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
 
-        // -0.14 | -0.05 | -0.025 | 0.025 | 0.05 | 0.14
+        // -0.13 | -0.05 | -0.025 | 0.025 | 0.05 | 0.13
         // Total length: 0.28 = 730px
         // Ok : 0.1 = 260px
         // Perfect : 0.05 = 130px
-        
+
         Utils.CreateBars(_canvas, 0, DefaultY, 730, 260, 130);
 
         var arrow = new GameObject("Arrow");
