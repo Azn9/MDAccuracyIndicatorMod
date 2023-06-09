@@ -18,6 +18,7 @@ public class InGameIndicator : MonoBehaviour
     private readonly List<Object> _hitEntries = new();
     private readonly List<Object> _hitReport = new();
     private GameObject _canvas;
+    private RectTransform _centerIndicator;
     private RectTransform _arrowRt;
     private float _totalDelay;
     private int _totalHits;
@@ -44,7 +45,7 @@ public class InGameIndicator : MonoBehaviour
         // Ok : 0.1 = 280px
         // Perfect : 0.05 = 140px
 
-        Utils.CreateBars(_canvas, 0, DefaultY, 730, 280, 140);
+        _centerIndicator = Utils.CreateBars(_canvas, 0, DefaultY, 730, 280, 140).GetComponent<RectTransform>();
 
         var arrow = new GameObject("Arrow");
         arrow.transform.SetParent(_canvas.transform);
@@ -81,20 +82,21 @@ public class InGameIndicator : MonoBehaviour
 
         var color = time switch
         {
-            < 0.025f and > -0.025f => new Color(0, 0.73F, 0.83F),
-            < 0.05f and > -0.05f => new Color(0.29F, 0.68F, 0.31F),
-            _ => new Color(1f, 0.59F, 0)
+            < 0.025f and > -0.025f => Utils.ColorPerfect,
+            < 0.05f and > -0.05f => Utils.ColorAlmostPerfect,
+            _ => Utils.ColorGreat
         };
 
         var hitIndicator = new GameObject("Hit");
         hitIndicator.transform.SetParent(_canvas.transform);
         var hitRt = hitIndicator.AddComponent<RectTransform>();
         var hitRi = hitIndicator.AddComponent<RawImage>();
-        hitRi.color = color;
+        hitRi.color = color.AlphaMultiplied(0.4f);
         hitRt.anchoredPosition = new Vector2(x, DefaultY);
         hitRt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(5), Utils.ConvertHeightFrom1080P(40));
 
         _hitEntries.Add(new HitEntry(Time.time, time, hitIndicator, hitRi));
+        _centerIndicator.SetAsLastSibling();
 
         // -130 = 0
         // -125 = 1
@@ -136,11 +138,11 @@ public class InGameIndicator : MonoBehaviour
             float alpha;
             if (since < 2f)
             {
-                alpha = 1f;
+                alpha = 0.4f;
             }
             else
             {
-                alpha = 1f - (since - 2f) / 3f;
+                alpha = (1f - (since - 2f) / 3f) * 0.4f;
             }
 
             var color = hitEntry.RawImage.color;
