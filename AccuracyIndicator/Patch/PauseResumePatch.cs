@@ -1,5 +1,5 @@
-﻿using FormulaBase;
 using HarmonyLib;
+using Il2CppFormulaBase;
 
 namespace AccuracyIndicator.Patch;
 
@@ -11,7 +11,9 @@ public abstract class PauseResumePatch
         private static void Postfix()
         {
             if (Main.InGameIndicator is not null)
+            {
                 Main.InGameIndicator.Pause();
+            }
         }
     }
 
@@ -21,7 +23,9 @@ public abstract class PauseResumePatch
         private static void Postfix()
         {
             if (Main.InGameIndicator is not null)
+            {
                 Main.InGameIndicator.Resume();
+            }
         }
     }
 }

@@ -1,29 +1,22 @@
-﻿using System;
-using Il2CppSystem.Collections.Generic;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
-using Object = Il2CppSystem.Object;
 
 namespace AccuracyIndicator.Indicator;
 
-public class VictoryIndicator : MonoBehaviour
+[RegisterTypeInIl2Cpp]
+internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
 {
-    public VictoryIndicator(IntPtr intPtr) : base(intPtr)
-    {
-    }
-
-    private readonly List<Object> _antiGC = new();
-    private GameObject _canvas;
-    private Text _text;
-    private bool _rendered;
+    private readonly Il2CppObjectList _antiGC = new();
+    private GameObject? _canvas;
     private float? _meanDelay;
-    private List<Object> _report;
+    private bool _rendered;
+    private Il2CppObjectList? _report;
+
 
     private void Start()
     {
         _antiGC.Add(this);
-        
+
         _canvas = new GameObject("Canvas");
         _canvas.AddComponent<Canvas>();
         _canvas.AddComponent<CanvasScaler>();
@@ -34,10 +27,14 @@ public class VictoryIndicator : MonoBehaviour
     private void Update()
     {
         if (_rendered)
+        {
             return;
+        }
 
-        if (_canvas == null || _meanDelay == null || _report == null)
+        if (_canvas is null || _meanDelay is null || _report is null)
+        {
             return;
+        }
 
         Render();
 
@@ -53,22 +50,22 @@ public class VictoryIndicator : MonoBehaviour
     private void Render()
     {
         var textObject = new GameObject("Text");
-        textObject.transform.SetParent(_canvas.transform);
+        textObject.transform.SetParent(_canvas!.transform);
         var textRt = textObject.AddComponent<RectTransform>();
         textRt.anchoredPosition = new Vector2(Utils.ConvertWidthFrom1920P(-650), Utils.ConvertHeightFrom1080P(200));
         textRt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(600), Utils.ConvertHeightFrom1080P(40));
-        
-        _text = textObject.AddComponent<Text>();
-        _text.text = $"Mean delay: {(int)(_meanDelay! * 1000)} ms";
-        
+
+        var text = textObject.AddComponent<Text>();
+        text.text = $"Mean delay: {(int)(_meanDelay! * 1000)} ms";
+
         var snapstaste = Addressables.LoadAssetAsync<Font>("Snaps Taste");
         var font = snapstaste.WaitForCompletion();
-        
-        _text.font = font;
-        _text.fontSize = 40;
-        _text.horizontalOverflow = HorizontalWrapMode.Overflow;
-        _text.verticalOverflow = VerticalWrapMode.Overflow;
-        _text.color = Color.white;
+
+        text.font = font;
+        text.fontSize = 40;
+        text.horizontalOverflow = HorizontalWrapMode.Overflow;
+        text.verticalOverflow = VerticalWrapMode.Overflow;
+        text.color = Color.white;
 
         Utils.CreateBars(_canvas, Utils.ConvertWidthFrom1920P(-650), Utils.ConvertHeightFrom1080P(230), 600, 171, 106);
 
@@ -78,17 +75,19 @@ public class VictoryIndicator : MonoBehaviour
         {
             var time = i / 1000f;
             var timeRange = (int)(time * 1000) / 5 + 26;
-            var hits = _report[timeRange].Cast<ReportRange>();
+            var hits = _report![timeRange].Cast<ReportRange>();
 
             if (hits.Amount > max)
+            {
                 max = hits.Amount;
+            }
         }
 
         for (float i = -130; i < 130; i += 5)
         {
             var time = i / 1000f;
             var timeRange = (int)(time * 1000) / 5 + 26;
-            var hits = _report[timeRange].Cast<ReportRange>();
+            var hits = _report![timeRange].Cast<ReportRange>();
 
             var bar = new GameObject($"Bar {time}");
             bar.transform.SetParent(_canvas.transform);
@@ -117,13 +116,13 @@ public class VictoryIndicator : MonoBehaviour
         centerRt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(3), Utils.ConvertHeightFrom1080P(300));
         centerRt.anchoredPosition = new Vector2(Utils.ConvertWidthFrom1920P(-650), Utils.ConvertHeightFrom1080P(390));
     }
-    
+
     public void SetMeanDelay(float meanDelay)
     {
         _meanDelay = meanDelay;
     }
 
-    public void SetReport(List<Object> report)
+    public void SetReport(Il2CppObjectList report)
     {
         _report = report;
     }

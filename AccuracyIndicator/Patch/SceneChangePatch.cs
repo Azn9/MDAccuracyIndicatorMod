@@ -1,43 +1,15 @@
-﻿using AccuracyIndicator.Indicator;
+using AccuracyIndicator.Indicator;
 using HarmonyLib;
-using MelonLoader;
-using UnityEngine;
+using Il2Cpp;
+using Object = UnityEngine.Object;
 
 namespace AccuracyIndicator.Patch;
 
-public static class SceneChangePatch
+internal static class SceneChangePatch
 {
     public static void OnSceneWasUnloaded(string sceneName)
     {
         if (sceneName == "GameMain")
-            Destroy();
-    }
-
-    [HarmonyPatch(typeof(PnlVictory), "OnVictory")]
-    internal static class VictoryPatch
-    {
-        private static void Postfix()
-        {
-            if (Main.InGameIndicator is null) // Patch may be called twice
-                return;
-            
-            var meanDelay = Main.InGameIndicator.GetMeanDelay();
-            var report = Main.InGameIndicator.GetReport();
-
-            Object.Destroy(Main.InGameIndicator);
-            Main.InGameIndicator = null;
-
-            var victoryIndicator = Main.IndicatorObj.AddComponent<VictoryIndicator>();
-
-            victoryIndicator.SetMeanDelay(meanDelay);
-            victoryIndicator.SetReport(report);
-        }
-    }
-
-    [HarmonyPatch(typeof(PnlFail), "Fail")]
-    internal static class FailPatch
-    {
-        private static void Postfix()
         {
             Destroy();
         }
@@ -55,6 +27,44 @@ public static class SceneChangePatch
         {
             Object.Destroy(Main.IndicatorObj);
             Main.IndicatorObj = null;
+        }
+    }
+
+    [HarmonyPatch(typeof(PnlVictory), nameof(PnlVictory.OnVictory),
+        typeof(Il2CppSystem.Object), typeof(Il2CppSystem.Object), typeof(Il2CppSystem.Object[]))]
+    internal static class VictoryPatch
+    {
+        private static void Postfix()
+        {
+            if (Main.InGameIndicator is null) // Patch may be called twice
+            {
+                return;
+            }
+
+            var meanDelay = Main.InGameIndicator.GetMeanDelay();
+            var report = Main.InGameIndicator.GetReport();
+
+            Object.Destroy(Main.InGameIndicator);
+            Main.InGameIndicator = null;
+
+            if (!Save.Settings.ShowMeanDelay)
+            {
+                return;
+            }
+
+            var victoryIndicator = Main.IndicatorObj!.AddComponent<VictoryIndicator>();
+
+            victoryIndicator.SetMeanDelay(meanDelay);
+            victoryIndicator.SetReport(report);
+        }
+    }
+
+    [HarmonyPatch(typeof(PnlFail), "Fail")]
+    internal static class FailPatch
+    {
+        private static void Postfix()
+        {
+            Destroy();
         }
     }
 }

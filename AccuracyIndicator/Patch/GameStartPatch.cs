@@ -1,17 +1,15 @@
-﻿using AccuracyIndicator.Indicator;
-using FormulaBase;
+using AccuracyIndicator.Indicator;
 using HarmonyLib;
-using UnityEngine;
+using Il2CppFormulaBase;
 
-namespace AccuracyIndicator.Patch
+namespace AccuracyIndicator.Patch;
+
+[HarmonyPatch(typeof(StageBattleComponent), "GameStart")]
+internal static class GameStartPatch
 {
-    [HarmonyPatch(typeof(StageBattleComponent), "GameStart")]
-    public static class GameStartPatch
+    private static void Postfix()
     {
-        private static void Postfix()
-        {
-            Main.IndicatorObj ??= new GameObject("Indicator");
-            Main.InGameIndicator ??= Main.IndicatorObj.AddComponent<InGameIndicator>();
-        }
+        Main.IndicatorObj ??= new GameObject("Indicator");
+        Main.InGameIndicator ??= Main.IndicatorObj.AddComponent<InGameIndicator>();
     }
 }

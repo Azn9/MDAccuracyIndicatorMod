@@ -1,27 +1,24 @@
-﻿using AccuracyIndicator.Indicator;
+using AccuracyIndicator.Indicator;
 using AccuracyIndicator.Patch;
-using MelonLoader;
-using UnhollowerRuntimeLib;
-using UnityEngine;
+using Tomlet;
 
 namespace AccuracyIndicator;
 
-public class Main : MelonMod
+internal class Main : MelonMod
 {
-    public static GameObject IndicatorObj;
-    public static InGameIndicator InGameIndicator;
+    internal static GameObject? IndicatorObj { get; set; }
+    internal static InGameIndicator? InGameIndicator { get; set; }
 
     public override void OnInitializeMelon()
     {
-        ClassInjector.RegisterTypeInIl2Cpp<InGameIndicator>();
-        ClassInjector.RegisterTypeInIl2Cpp<VictoryIndicator>();
-        ClassInjector.RegisterTypeInIl2Cpp<HitEntry>();
-        ClassInjector.RegisterTypeInIl2Cpp<ReportRange>();
+        Save.Load();
+    }
 
-        HarmonyInstance.PatchAll();
+    public override void OnDeinitializeMelon()
+    {
+        File.WriteAllText(Path.Combine("UserData", "Accuracy Indicator.cfg"), TomletMain.TomlStringFrom(Save.Settings));
     }
 
     public override void OnSceneWasUnloaded(int buildIndex, string sceneName) =>
         SceneChangePatch.OnSceneWasUnloaded(sceneName);
-
 }

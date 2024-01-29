@@ -1,33 +1,27 @@
-﻿using System;
-using Il2CppSystem.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UI;
 using Object = Il2CppSystem.Object;
 
 namespace AccuracyIndicator.Indicator;
 
-public class InGameIndicator : MonoBehaviour
+[RegisterTypeInIl2Cpp]
+public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
 {
-    public InGameIndicator(IntPtr intPtr) : base(intPtr)
-    {
-    }
-    
     private static readonly float DefaultY = -Utils.ConvertHeightFrom1080P(420);
 
-    private readonly List<Object> _antiGC = new();
-    private readonly List<Object> _hitEntries = new();
-    private readonly List<Object> _hitReport = new();
-    private GameObject _canvas;
-    private RectTransform _arrowRt;
-    private float _totalDelay;
-    private int _totalHits;
+    private readonly Il2CppObjectList _antiGC = new();
+    private readonly Il2CppObjectList _hitEntries = new();
+    private readonly Il2CppObjectList _hitReport = new();
+    private RectTransform? _arrowRt;
+    private GameObject? _canvas;
     private bool _inGame = true;
     private float _pausedTime;
+    private float _totalDelay;
+    private int _totalHits;
 
     private void Start()
     {
         _antiGC.Add(this);
-        
+
         for (float i = -130; i < 130; i += 5)
         {
             _hitReport.Add(new ReportRange());
@@ -69,56 +63,19 @@ public class InGameIndicator : MonoBehaviour
         _arrowRt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(2), Utils.ConvertHeightFrom1080P(20));
     }
 
-    public void AddHit(float time)
-    {
-        if (time is < -0.13f or > 0.13f)
-            return;
-    
-        _totalDelay += time;
-        _totalHits++;
-
-        var x = Utils.ConvertWidthFrom1920P(time / 0.26f * 730f);
-
-        var color = time switch
-        {
-            < 0.025f and > -0.025f => new Color(0, 0.73F, 0.83F),
-            < 0.05f and > -0.05f => new Color(0.29F, 0.68F, 0.31F),
-            _ => new Color(1f, 0.59F, 0)
-        };
-
-        var hitIndicator = new GameObject("Hit");
-        hitIndicator.transform.SetParent(_canvas.transform);
-        var hitRt = hitIndicator.AddComponent<RectTransform>();
-        var hitRi = hitIndicator.AddComponent<RawImage>();
-        hitRi.color = color;
-        hitRt.anchoredPosition = new Vector2(x, DefaultY);
-        hitRt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(5), Utils.ConvertHeightFrom1080P(40));
-
-        _hitEntries.Add(new HitEntry(Time.time, time, hitIndicator, hitRi));
-
-        // -130 = 0
-        // -125 = 1
-        // ...
-            
-        // time * 1000 is >= -130 and <= 130
-        // (time * 1000) / 5 is >= -26 and <= 26
-        // (time * 1000) / 5 + 26 is >= 0 and <= 52
-            
-        var timeRange = (int)(time * 1000) / 5 + 26;
-        _hitReport[timeRange].Cast<ReportRange>().Amount++;
-    }
-
     private void Update()
     {
         if (!_inGame)
+        {
             return;
+        }
 
         var dt = Time.deltaTime;
         var time = Time.time;
         var totalDelay = 0f;
         var countDelay = 0;
 
-        List<Object> toRemove = new();
+        List<Object> toRemove = [];
 
         foreach (var o in _hitEntries)
         {
@@ -143,7 +100,7 @@ public class InGameIndicator : MonoBehaviour
                 alpha = 1f - (since - 2f) / 3f;
             }
 
-            var color = hitEntry.RawImage.color;
+            var color = hitEntry.RawImage!.color;
             color.a = alpha;
             hitEntry.RawImage.color = color;
 
@@ -159,7 +116,7 @@ public class InGameIndicator : MonoBehaviour
         var meanDelay = countDelay == 0 ? 0 : totalDelay / countDelay;
         var x = Utils.ConvertWidthFrom1920P(meanDelay / 0.26f * 730f);
 
-        var position = _arrowRt.anchoredPosition;
+        var position = _arrowRt!.anchoredPosition;
         var newPosition = new Vector2(x, position.y);
 
         position = Vector2.Lerp(position, newPosition, dt * 3);
@@ -172,18 +129,58 @@ public class InGameIndicator : MonoBehaviour
         Destroy(_canvas);
     }
 
+    public void AddHit(float time)
+    {
+        if (time is < -0.13f or > 0.13f)
+        {
+            return;
+        }
+
+        _totalDelay += time;
+        _totalHits++;
+
+        var x = Utils.ConvertWidthFrom1920P(time / 0.26f * 730f);
+
+        var color = time switch
+        {
+            < 0.025f and > -0.025f => new Color(0, 0.73F, 0.83F),
+            < 0.05f and > -0.05f => new Color(0.29F, 0.68F, 0.31F),
+            _ => new Color(1f, 0.59F, 0)
+        };
+
+        var hitIndicator = new GameObject("Hit");
+        hitIndicator.transform.SetParent(_canvas!.transform);
+        var hitRt = hitIndicator.AddComponent<RectTransform>();
+        var hitRi = hitIndicator.AddComponent<RawImage>();
+        hitRi.color = color;
+        hitRt.anchoredPosition = new Vector2(x, DefaultY);
+        hitRt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(5), Utils.ConvertHeightFrom1080P(40));
+
+        _hitEntries.Add(new HitEntry(Time.time, time, hitIndicator, hitRi));
+
+        // -130 = 0
+        // -125 = 1
+        // ...
+
+        // time * 1000 is >= -130 and <= 130
+        // (time * 1000) / 5 is >= -26 and <= 26
+        // (time * 1000) / 5 + 26 is >= 0 and <= 52
+
+        var timeRange = (int)(time * 1000) / 5 + 26;
+        _hitReport[timeRange].Cast<ReportRange>().Amount++;
+    }
+
     public float GetMeanDelay()
     {
         if (_totalHits == 0)
+        {
             return 0;
+        }
 
         return _totalDelay / _totalHits;
     }
 
-    public List<Object> GetReport()
-    {
-        return _hitReport;
-    }
+    public Il2CppObjectList GetReport() => _hitReport;
 
     public void Pause()
     {
