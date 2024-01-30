@@ -1,11 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-
 namespace AccuracyIndicator.Indicator;
 
 public static class Utils
 {
-    
     public static float ConvertWidthFrom1920P(float x) => x / 1920f * Screen.width;
     public static float ConvertHeightFrom1080P(float x) => x / 1080f * Screen.height;
 
@@ -43,5 +39,4 @@ public static class Utils
         centerRi.color = new Color(1, 1, 1);
         centerRt.sizeDelta = new Vector2(ConvertWidthFrom1920P(3), ConvertHeightFrom1080P(50));
     }
-    
 }

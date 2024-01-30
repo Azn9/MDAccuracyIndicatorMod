@@ -1,27 +1,39 @@
-﻿using AccuracyIndicator.Indicator;
-using AccuracyIndicator.Patch;
-using MelonLoader;
-using UnhollowerRuntimeLib;
-using UnityEngine;
+using AccuracyIndicator.Indicator;
+using Tomlet;
+using Object = UnityEngine.Object;
 
 namespace AccuracyIndicator;
 
-public class Main : MelonMod
+internal class Main : MelonMod
 {
-    public static GameObject IndicatorObj;
-    public static InGameIndicator InGameIndicator;
+    internal static GameObject? ResultIndicator { get; set; }
+    internal static InGameIndicator? GameIndicator { get; set; }
 
-    public override void OnInitializeMelon()
+    public override void OnInitializeMelon() => Save.Load();
+
+    public override void OnDeinitializeMelon() =>
+        File.WriteAllText(Path.Combine("UserData", "AccuracyIndicator.cfg"), TomletMain.TomlStringFrom(Save.Settings));
+
+    public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
     {
-        ClassInjector.RegisterTypeInIl2Cpp<InGameIndicator>();
-        ClassInjector.RegisterTypeInIl2Cpp<VictoryIndicator>();
-        ClassInjector.RegisterTypeInIl2Cpp<HitEntry>();
-        ClassInjector.RegisterTypeInIl2Cpp<ReportRange>();
-
-        HarmonyInstance.PatchAll();
+        if (sceneName == "GameMain")
+        {
+            DestroyIndicators();
+        }
     }
 
-    public override void OnSceneWasUnloaded(int buildIndex, string sceneName) =>
-        SceneChangePatch.OnSceneWasUnloaded(sceneName);
+    internal static void DestroyIndicators()
+    {
+        if (GameIndicator != null)
+        {
+            Object.Destroy(GameIndicator);
+            GameIndicator = null;
+        }
 
+        if (ResultIndicator != null)
+        {
+            Object.Destroy(ResultIndicator);
+            ResultIndicator = null;
+        }
+    }
 }
