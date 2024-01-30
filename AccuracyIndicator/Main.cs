@@ -12,7 +12,7 @@ internal class Main : MelonMod
     public override void OnInitializeMelon() => Save.Load();
 
     public override void OnDeinitializeMelon() =>
-        File.WriteAllText(Path.Combine("UserData", "Accuracy Indicator.cfg"), TomletMain.TomlStringFrom(Save.Settings));
+        File.WriteAllText(Path.Combine("UserData", "AccuracyIndicator.cfg"), TomletMain.TomlStringFrom(Save.Settings));
 
     public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
     {

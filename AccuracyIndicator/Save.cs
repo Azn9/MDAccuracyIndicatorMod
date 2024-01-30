@@ -9,13 +9,13 @@ internal static class Save
 
     public static void Load()
     {
-        if (!File.Exists(Path.Combine("UserData", "Accuracy Indicator.cfg")))
+        if (!File.Exists(Path.Combine("UserData", "AccuracyIndicator.cfg")))
         {
             var defaultConfig = TomletMain.TomlStringFrom(new Data(true));
-            File.WriteAllText(Path.Combine("UserData", "Accuracy Indicator.cfg"), defaultConfig);
+            File.WriteAllText(Path.Combine("UserData", "AccuracyIndicator.cfg"), defaultConfig);
         }
 
-        var data = File.ReadAllText(Path.Combine("UserData", "Accuracy Indicator.cfg"));
+        var data = File.ReadAllText(Path.Combine("UserData", "AccuracyIndicator.cfg"));
         Settings = TomletMain.To<Data>(data);
     }
 }
