@@ -1,5 +1,3 @@
-using UnityEngine.UI;
-
 namespace AccuracyIndicator.Indicator;
 
 public static class Utils

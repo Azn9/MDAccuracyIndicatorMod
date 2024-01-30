@@ -1,4 +1,3 @@
-using HarmonyLib;
 using Il2CppAssets.Scripts.GameCore.HostComponent;
 using Il2CppAssets.Scripts.PeroTools.Commons;
 using Il2CppFormulaBase;
@@ -7,12 +6,13 @@ using Decimal = Il2CppSystem.Decimal;
 
 namespace AccuracyIndicator.Patch;
 
-[HarmonyPatch(typeof(BattleRoleAttributeComponent), "AttackScore", typeof(int), typeof(int), typeof(TimeNodeOrder))]
+[HarmonyPatch(typeof(BattleRoleAttributeComponent), nameof(BattleRoleAttributeComponent.AttackScore),
+    typeof(int), typeof(int), typeof(TimeNodeOrder))]
 public static class AttackScorePatch
 {
     private static void Prefix(int idx, TimeNodeOrder? tno)
     {
-        if (tno is null || Main.InGameIndicator == null)
+        if (tno is null || GameIndicator == null)
         {
             return;
         }
@@ -27,6 +27,6 @@ public static class AttackScorePatch
         var delay = (Decimal)GameGlobal.gTouch.tickTime - tno.md.tick;
         var floatDelay = Decimal.ToSingle(delay);
 
-        Main.InGameIndicator.AddHit(floatDelay);
+        GameIndicator.AddHit(floatDelay);
     }
 }

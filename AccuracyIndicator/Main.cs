@@ -1,24 +1,39 @@
 using AccuracyIndicator.Indicator;
-using AccuracyIndicator.Patch;
 using Tomlet;
+using Object = UnityEngine.Object;
 
 namespace AccuracyIndicator;
 
 internal class Main : MelonMod
 {
-    internal static GameObject? IndicatorObj { get; set; }
-    internal static InGameIndicator? InGameIndicator { get; set; }
+    internal static GameObject? ResultIndicator { get; set; }
+    internal static InGameIndicator? GameIndicator { get; set; }
 
-    public override void OnInitializeMelon()
-    {
-        Save.Load();
-    }
+    public override void OnInitializeMelon() => Save.Load();
 
-    public override void OnDeinitializeMelon()
-    {
+    public override void OnDeinitializeMelon() =>
         File.WriteAllText(Path.Combine("UserData", "Accuracy Indicator.cfg"), TomletMain.TomlStringFrom(Save.Settings));
+
+    public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
+    {
+        if (sceneName == "GameMain")
+        {
+            DestroyIndicators();
+        }
     }
 
-    public override void OnSceneWasUnloaded(int buildIndex, string sceneName) =>
-        SceneChangePatch.OnSceneWasUnloaded(sceneName);
+    internal static void DestroyIndicators()
+    {
+        if (GameIndicator != null)
+        {
+            Object.Destroy(GameIndicator);
+            GameIndicator = null;
+        }
+
+        if (ResultIndicator != null)
+        {
+            Object.Destroy(ResultIndicator);
+            ResultIndicator = null;
+        }
+    }
 }

@@ -1,5 +1,4 @@
 using UnityEngine.AddressableAssets;
-using UnityEngine.UI;
 
 namespace AccuracyIndicator.Indicator;
 

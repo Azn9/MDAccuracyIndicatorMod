@@ -1,30 +1,29 @@
-using HarmonyLib;
 using Il2CppFormulaBase;
 
 namespace AccuracyIndicator.Patch;
 
-public abstract class PauseResumePatch
+internal static class PauseResumePatch
 {
-    [HarmonyPatch(typeof(StageBattleComponent), "Pause")]
-    public static class PausePatch
+    [HarmonyPatch(typeof(StageBattleComponent), nameof(StageBattleComponent.Pause))]
+    internal static class PausePatch
     {
         private static void Postfix()
         {
-            if (Main.InGameIndicator is not null)
+            if (GameIndicator == null)
             {
-                Main.InGameIndicator.Pause();
+                GameIndicator!.Pause();
             }
         }
     }
 
-    [HarmonyPatch(typeof(StageBattleComponent), "Resume")]
-    public static class ResumePatch
+    [HarmonyPatch(typeof(StageBattleComponent), nameof(StageBattleComponent.Resume))]
+    internal static class ResumePatch
     {
         private static void Postfix()
         {
-            if (Main.InGameIndicator is not null)
+            if (GameIndicator == null)
             {
-                Main.InGameIndicator.Resume();
+                GameIndicator!.Resume();
             }
         }
     }

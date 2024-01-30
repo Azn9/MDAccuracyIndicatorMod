@@ -1,4 +1,3 @@
-using UnityEngine.UI;
 using Object = Il2CppSystem.Object;
 
 namespace AccuracyIndicator.Indicator;
