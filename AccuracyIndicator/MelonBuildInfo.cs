@@ -8,5 +8,5 @@ internal static class MelonBuildInfo
 
     internal const string Author = "Azn9 & lxy";
 
-    internal const string ModVersion = "2.0.1";
+    internal const string ModVersion = "2.0.2";
 }

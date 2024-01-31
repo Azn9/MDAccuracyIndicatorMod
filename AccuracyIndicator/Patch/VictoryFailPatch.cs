@@ -13,7 +13,7 @@ internal static class VictoryFailPatch
     {
         private static void Postfix()
         {
-            if (GameIndicator == null) // Patch may be called twice
+            if (GameIndicator is null) // Patch may be called twice
             {
                 return;
             }

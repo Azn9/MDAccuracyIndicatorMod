@@ -6,8 +6,8 @@ namespace AccuracyIndicator;
 
 internal class Main : MelonMod
 {
-    internal static GameObject? ResultIndicator { get; set; }
-    internal static InGameIndicator? GameIndicator { get; set; }
+    internal static GameObject ResultIndicator { get; set; }
+    internal static InGameIndicator GameIndicator { get; set; }
 
     public override void OnInitializeMelon() => Save.Load();
 
@@ -24,13 +24,13 @@ internal class Main : MelonMod
 
     internal static void DestroyIndicators()
     {
-        if (GameIndicator != null)
+        if (GameIndicator is not null)
         {
             Object.Destroy(GameIndicator);
             GameIndicator = null;
         }
 
-        if (ResultIndicator != null)
+        if (ResultIndicator is not null)
         {
             Object.Destroy(ResultIndicator);
             ResultIndicator = null;

@@ -5,13 +5,13 @@ namespace AccuracyIndicator.Indicator;
 [RegisterTypeInIl2Cpp]
 public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
 {
-    private static readonly float DefaultY = -Utils.ConvertHeightFrom1080P(420);
+    private static readonly float DefaultY = -ConvertHeightFrom1080P(420);
 
     private readonly Il2CppObjectList _antiGC = new();
     private readonly Il2CppObjectList _hitEntries = new();
     private readonly Il2CppObjectList _hitReport = new();
-    private RectTransform? _arrowRt;
-    private GameObject? _canvas;
+    private RectTransform _arrowRt;
+    private GameObject _canvas;
     private bool _inGame = true;
     private float _pausedTime;
     private float _totalDelay;
@@ -37,7 +37,7 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         // Ok : 0.1 = 280px
         // Perfect : 0.05 = 140px
 
-        Utils.CreateBars(_canvas, 0, DefaultY, 730, 280, 140);
+        CreateBars(_canvas, 0, DefaultY, 730, 280, 140);
 
         var arrow = new GameObject("Arrow");
         arrow.transform.SetParent(_canvas.transform);
@@ -52,14 +52,14 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         var arrow2Ri = arrow2.AddComponent<RawImage>();
         arrow1Ri.color = new Color(1, 1, 1);
         arrow2Ri.color = new Color(1, 1, 1);
-        _arrowRt.anchoredPosition = new Vector2(0, DefaultY + Utils.ConvertHeightFrom1080P(40));
-        arrow1Rt.anchoredPosition = new Vector2(Utils.ConvertWidthFrom1920P(-7), 0);
-        arrow2Rt.anchoredPosition = new Vector2(Utils.ConvertWidthFrom1920P(7), 0);
-        arrow1Rt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(3), Utils.ConvertHeightFrom1080P(20));
-        arrow2Rt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(3), Utils.ConvertHeightFrom1080P(20));
+        _arrowRt.anchoredPosition = new Vector2(0, DefaultY + ConvertHeightFrom1080P(40));
+        arrow1Rt.anchoredPosition = new Vector2(ConvertWidthFrom1920P(-7), 0);
+        arrow2Rt.anchoredPosition = new Vector2(ConvertWidthFrom1920P(7), 0);
+        arrow1Rt.sizeDelta = new Vector2(ConvertWidthFrom1920P(3), ConvertHeightFrom1080P(20));
+        arrow2Rt.sizeDelta = new Vector2(ConvertWidthFrom1920P(3), ConvertHeightFrom1080P(20));
         arrow1Rt.rotation = Quaternion.Euler(0, 0, 45);
         arrow2Rt.rotation = Quaternion.Euler(0, 0, -45);
-        _arrowRt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(2), Utils.ConvertHeightFrom1080P(20));
+        _arrowRt.sizeDelta = new Vector2(ConvertWidthFrom1920P(2), ConvertHeightFrom1080P(20));
     }
 
     private void Update()
@@ -113,7 +113,7 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         }
 
         var meanDelay = countDelay == 0 ? 0 : totalDelay / countDelay;
-        var x = Utils.ConvertWidthFrom1920P(meanDelay / 0.26f * 730f);
+        var x = ConvertWidthFrom1920P(meanDelay / 0.26f * 730f);
 
         var position = _arrowRt!.anchoredPosition;
         var newPosition = new Vector2(x, position.y);
@@ -138,7 +138,7 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         _totalDelay += time;
         _totalHits++;
 
-        var x = Utils.ConvertWidthFrom1920P(time / 0.26f * 730f);
+        var x = ConvertWidthFrom1920P(time / 0.26f * 730f);
 
         var color = time switch
         {
@@ -153,7 +153,7 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         var hitRi = hitIndicator.AddComponent<RawImage>();
         hitRi.color = color;
         hitRt.anchoredPosition = new Vector2(x, DefaultY);
-        hitRt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(5), Utils.ConvertHeightFrom1080P(40));
+        hitRt.sizeDelta = new Vector2(ConvertWidthFrom1920P(5), ConvertHeightFrom1080P(40));
 
         _hitEntries.Add(new HitEntry(Time.time, time, hitIndicator, hitRi));
 

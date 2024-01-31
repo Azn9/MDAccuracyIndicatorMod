@@ -9,9 +9,9 @@ internal static class PauseResumePatch
     {
         private static void Postfix()
         {
-            if (GameIndicator == null)
+            if (GameIndicator != null)
             {
-                GameIndicator!.Pause();
+                GameIndicator.Pause();
             }
         }
     }
@@ -21,9 +21,9 @@ internal static class PauseResumePatch
     {
         private static void Postfix()
         {
-            if (GameIndicator == null)
+            if (GameIndicator != null)
             {
-                GameIndicator!.Resume();
+                GameIndicator.Resume();
             }
         }
     }

@@ -10,7 +10,7 @@ namespace AccuracyIndicator.Patch;
     typeof(int), typeof(int), typeof(TimeNodeOrder))]
 public static class AttackScorePatch
 {
-    private static void Prefix(int idx, TimeNodeOrder? tno)
+    private static void Prefix(int idx, TimeNodeOrder tno)
     {
         if (tno is null || GameIndicator == null)
         {

@@ -6,10 +6,11 @@ namespace AccuracyIndicator.Indicator;
 internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
 {
     private readonly Il2CppObjectList _antiGC = new();
-    private GameObject? _canvas;
-    private float? _meanDelay;
+    private GameObject _canvas;
+    private float _meanDelay;
     private bool _rendered;
-    private Il2CppObjectList? _report;
+    private Il2CppObjectList _report;
+    private bool _setMeanDelay;
 
 
     private void Start()
@@ -30,7 +31,7 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
             return;
         }
 
-        if (_canvas is null || _meanDelay is null || _report is null)
+        if (_canvas is null || !_setMeanDelay || _report is null)
         {
             return;
         }
@@ -51,8 +52,8 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         var textObject = new GameObject("Text");
         textObject.transform.SetParent(_canvas!.transform);
         var textRt = textObject.AddComponent<RectTransform>();
-        textRt.anchoredPosition = new Vector2(Utils.ConvertWidthFrom1920P(-650), Utils.ConvertHeightFrom1080P(200));
-        textRt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(600), Utils.ConvertHeightFrom1080P(40));
+        textRt.anchoredPosition = new Vector2(ConvertWidthFrom1920P(-650), ConvertHeightFrom1080P(200));
+        textRt.sizeDelta = new Vector2(ConvertWidthFrom1920P(600), ConvertHeightFrom1080P(40));
 
         var text = textObject.AddComponent<Text>();
         text.text = $"Mean delay: {(int)(_meanDelay! * 1000)} ms";
@@ -66,7 +67,7 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         text.verticalOverflow = VerticalWrapMode.Overflow;
         text.color = Color.white;
 
-        Utils.CreateBars(_canvas, Utils.ConvertWidthFrom1920P(-650), Utils.ConvertHeightFrom1080P(230), 600, 171, 106);
+        CreateBars(_canvas, ConvertWidthFrom1920P(-650), ConvertHeightFrom1080P(230), 600, 171, 106);
 
         var max = 0;
 
@@ -103,8 +104,8 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
             var height = (int)(hits.Amount / (float)max * 300);
             var y = 230 + height / 2;
 
-            rt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(10), Utils.ConvertHeightFrom1080P(height));
-            rt.anchoredPosition = new Vector2(Utils.ConvertWidthFrom1920P(-650 + i * 2), Utils.ConvertHeightFrom1080P(y));
+            rt.sizeDelta = new Vector2(ConvertWidthFrom1920P(10), ConvertHeightFrom1080P(height));
+            rt.anchoredPosition = new Vector2(ConvertWidthFrom1920P(-650 + i * 2), ConvertHeightFrom1080P(y));
         }
 
         var centerIndicator = new GameObject("CenterIndicator2");
@@ -112,13 +113,14 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         var centerRt = centerIndicator.AddComponent<RectTransform>();
         var centerRi = centerIndicator.AddComponent<RawImage>();
         centerRi.color = new Color(1, 1, 1);
-        centerRt.sizeDelta = new Vector2(Utils.ConvertWidthFrom1920P(3), Utils.ConvertHeightFrom1080P(300));
-        centerRt.anchoredPosition = new Vector2(Utils.ConvertWidthFrom1920P(-650), Utils.ConvertHeightFrom1080P(390));
+        centerRt.sizeDelta = new Vector2(ConvertWidthFrom1920P(3), ConvertHeightFrom1080P(300));
+        centerRt.anchoredPosition = new Vector2(ConvertWidthFrom1920P(-650), ConvertHeightFrom1080P(390));
     }
 
     public void SetMeanDelay(float meanDelay)
     {
         _meanDelay = meanDelay;
+        _setMeanDelay = true;
     }
 
     public void SetReport(Il2CppObjectList report)
