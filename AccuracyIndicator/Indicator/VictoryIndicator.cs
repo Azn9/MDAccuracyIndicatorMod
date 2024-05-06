@@ -5,24 +5,10 @@ namespace AccuracyIndicator.Indicator;
 [RegisterTypeInIl2Cpp]
 internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
 {
-    private readonly Il2CppObjectList _antiGC = new();
-    private GameObject _canvas;
     private float _meanDelay;
     private bool _rendered;
     private Il2CppObjectList _report;
     private bool _setMeanDelay;
-
-
-    private void Start()
-    {
-        _antiGC.Add(this);
-
-        _canvas = new GameObject("Canvas");
-        _canvas.AddComponent<Canvas>();
-        _canvas.AddComponent<CanvasScaler>();
-        _canvas.AddComponent<GraphicRaycaster>();
-        _canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-    }
 
     private void Update()
     {
@@ -31,7 +17,7 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
             return;
         }
 
-        if (_canvas is null || !_setMeanDelay || _report is null)
+        if (IndicatorCanvas is null || !_setMeanDelay || _report is null)
         {
             return;
         }
@@ -41,16 +27,10 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         _rendered = true;
     }
 
-    private void OnDestroy()
-    {
-        _antiGC.Remove(this);
-        Destroy(_canvas);
-    }
-
     private void Render()
     {
         var textObject = new GameObject("Text");
-        textObject.transform.SetParent(_canvas!.transform);
+        textObject.transform.SetParent(IndicatorCanvas!.transform);
         var textRt = textObject.AddComponent<RectTransform>();
         textRt.anchoredPosition = new Vector2(ConvertWidthFrom1920P(-650), ConvertHeightFrom1080P(200));
         textRt.sizeDelta = new Vector2(ConvertWidthFrom1920P(600), ConvertHeightFrom1080P(40));
@@ -58,8 +38,7 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         var text = textObject.AddComponent<Text>();
         text.text = $"Mean delay: {(int)(_meanDelay! * 1000)} ms";
 
-        var snapstaste = Addressables.LoadAssetAsync<Font>("Snaps Taste");
-        var font = snapstaste.WaitForCompletion();
+        var font = Addressables.LoadAssetAsync<Font>("Snaps Taste").WaitForCompletion();
 
         text.font = font;
         text.fontSize = 40;
@@ -67,7 +46,7 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         text.verticalOverflow = VerticalWrapMode.Overflow;
         text.color = Color.white;
 
-        CreateBars(_canvas, ConvertWidthFrom1920P(-650), ConvertHeightFrom1080P(230), 600, 171, 106);
+        CreateResultBars();
 
         var max = 0;
 
@@ -90,7 +69,7 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
             var hits = _report![timeRange].Cast<ReportRange>();
 
             var bar = new GameObject($"Bar {time}");
-            bar.transform.SetParent(_canvas.transform);
+            bar.transform.SetParent(IndicatorCanvas.transform);
             var rt = bar.AddComponent<RectTransform>();
             var ri = bar.AddComponent<RawImage>();
 
@@ -109,7 +88,7 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         }
 
         var centerIndicator = new GameObject("CenterIndicator2");
-        centerIndicator.transform.SetParent(_canvas.transform);
+        centerIndicator.transform.SetParent(IndicatorCanvas.transform);
         var centerRt = centerIndicator.AddComponent<RectTransform>();
         var centerRi = centerIndicator.AddComponent<RawImage>();
         centerRi.color = new Color(1, 1, 1);

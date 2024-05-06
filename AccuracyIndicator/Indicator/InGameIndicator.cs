@@ -1,17 +1,12 @@
-using Object = Il2CppSystem.Object;
-
 namespace AccuracyIndicator.Indicator;
 
 [RegisterTypeInIl2Cpp]
 public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
 {
     private static readonly float DefaultY = -ConvertHeightFrom1080P(420);
-
-    private readonly Il2CppObjectList _antiGC = new();
-    private readonly Il2CppObjectList _hitEntries = new();
+    private readonly Il2CppSystem.Collections.Generic.List<HitEntry> _hitEntries = new();
     private readonly Il2CppObjectList _hitReport = new();
     private RectTransform _arrowRt;
-    private GameObject _canvas;
     private bool _inGame = true;
     private float _pausedTime;
     private float _totalDelay;
@@ -19,47 +14,18 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
 
     private void Start()
     {
-        _antiGC.Add(this);
-
         for (float i = -130; i < 130; i += 5)
         {
             _hitReport.Add(new ReportRange());
         }
-
-        _canvas = new GameObject("Canvas");
-        _canvas.AddComponent<Canvas>();
-        _canvas.AddComponent<CanvasScaler>();
-        _canvas.AddComponent<GraphicRaycaster>();
-        _canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
 
         // -0.13 | -0.05 | -0.025 | 0.025 | 0.05 | 0.13
         // Total length: 0.26 = 730px
         // Ok : 0.1 = 280px
         // Perfect : 0.05 = 140px
 
-        CreateBars(_canvas, 0, DefaultY, 730, 280, 140);
-
-        var arrow = new GameObject("Arrow");
-        arrow.transform.SetParent(_canvas.transform);
-        _arrowRt = arrow.AddComponent<RectTransform>();
-        var arrow1 = new GameObject("Arrow1");
-        var arrow2 = new GameObject("Arrow2");
-        arrow1.transform.SetParent(arrow.transform);
-        arrow2.transform.SetParent(arrow.transform);
-        var arrow1Rt = arrow1.AddComponent<RectTransform>();
-        var arrow2Rt = arrow2.AddComponent<RectTransform>();
-        var arrow1Ri = arrow1.AddComponent<RawImage>();
-        var arrow2Ri = arrow2.AddComponent<RawImage>();
-        arrow1Ri.color = new Color(1, 1, 1);
-        arrow2Ri.color = new Color(1, 1, 1);
-        _arrowRt.anchoredPosition = new Vector2(0, DefaultY + ConvertHeightFrom1080P(40));
-        arrow1Rt.anchoredPosition = new Vector2(ConvertWidthFrom1920P(-7), 0);
-        arrow2Rt.anchoredPosition = new Vector2(ConvertWidthFrom1920P(7), 0);
-        arrow1Rt.sizeDelta = new Vector2(ConvertWidthFrom1920P(3), ConvertHeightFrom1080P(20));
-        arrow2Rt.sizeDelta = new Vector2(ConvertWidthFrom1920P(3), ConvertHeightFrom1080P(20));
-        arrow1Rt.rotation = Quaternion.Euler(0, 0, 45);
-        arrow2Rt.rotation = Quaternion.Euler(0, 0, -45);
-        _arrowRt.sizeDelta = new Vector2(ConvertWidthFrom1920P(2), ConvertHeightFrom1080P(20));
+        CreateInGameBars();
+        CreateArrow();
     }
 
     private void Update()
@@ -74,11 +40,10 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         var totalDelay = 0f;
         var countDelay = 0;
 
-        List<Object> toRemove = [];
+        List<HitEntry> toRemove = [];
 
-        foreach (var o in _hitEntries)
+        foreach (var hitEntry in _hitEntries)
         {
-            var hitEntry = o.Cast<HitEntry>();
             var since = time - hitEntry.Time;
 
             if (since > 5f)
@@ -122,10 +87,27 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         _arrowRt.anchoredPosition = position;
     }
 
-    private void OnDestroy()
+    private void CreateArrow()
     {
-        _antiGC.Remove(this);
-        Destroy(_canvas);
+        var arrow = new GameObject("Arrow");
+        arrow.transform.SetParent(IndicatorCanvas.transform);
+        _arrowRt = arrow.AddComponent<RectTransform>();
+        var leftArrow = new GameObject("Left Arrow");
+        var rightArrow = new GameObject("Right Arrow");
+        leftArrow.transform.SetParent(arrow.transform);
+        rightArrow.transform.SetParent(arrow.transform);
+        var leftArrowRt = leftArrow.AddComponent<RectTransform>();
+        var rightArrowRt = rightArrow.AddComponent<RectTransform>();
+        leftArrow.AddComponent<RawImage>().color = new Color(1, 1, 1);
+        rightArrow.AddComponent<RawImage>().color = new Color(1, 1, 1);
+        _arrowRt.anchoredPosition = new Vector2(0, DefaultY + ConvertHeightFrom1080P(40));
+        leftArrowRt.anchoredPosition = new Vector2(ConvertWidthFrom1920P(-7), 0);
+        rightArrowRt.anchoredPosition = new Vector2(ConvertWidthFrom1920P(7), 0);
+        leftArrowRt.sizeDelta = new Vector2(ConvertWidthFrom1920P(3), ConvertHeightFrom1080P(20));
+        rightArrowRt.sizeDelta = new Vector2(ConvertWidthFrom1920P(3), ConvertHeightFrom1080P(20));
+        leftArrowRt.rotation = Quaternion.Euler(0, 0, 45);
+        rightArrowRt.rotation = Quaternion.Euler(0, 0, -45);
+        _arrowRt.sizeDelta = new Vector2(ConvertWidthFrom1920P(2), ConvertHeightFrom1080P(20));
     }
 
     public void AddHit(float time)
@@ -148,7 +130,7 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         };
 
         var hitIndicator = new GameObject("Hit");
-        hitIndicator.transform.SetParent(_canvas!.transform);
+        hitIndicator.transform.SetParent(IndicatorCanvas!.transform);
         var hitRt = hitIndicator.AddComponent<RectTransform>();
         var hitRi = hitIndicator.AddComponent<RawImage>();
         hitRi.color = color;
@@ -191,10 +173,8 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
     {
         var delayTime = Time.time - _pausedTime;
 
-        foreach (var o in _hitEntries)
+        foreach (var hitEntry in _hitEntries)
         {
-            var hitEntry = o.Cast<HitEntry>();
-
             hitEntry.Time += delayTime;
         }
 

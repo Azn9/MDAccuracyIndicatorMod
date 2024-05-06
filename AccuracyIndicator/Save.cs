@@ -1,33 +1,23 @@
 using Tomlet;
-using Tomlet.Attributes;
 
 namespace AccuracyIndicator;
 
 internal static class Save
 {
+    private static readonly string ConfigPath = Path.Combine("UserData", "AccuracyIndicator.cfg");
     internal static Data Settings { get; private set; } = new();
 
-    public static void Load()
+    public static void LoadData()
     {
-        if (!File.Exists(Path.Combine("UserData", "AccuracyIndicator.cfg")))
+        if (!File.Exists(ConfigPath))
         {
-            var defaultConfig = TomletMain.TomlStringFrom(new Data(true));
-            File.WriteAllText(Path.Combine("UserData", "AccuracyIndicator.cfg"), defaultConfig);
+            var defaultConfig = TomletMain.TomlStringFrom(new Data());
+            File.WriteAllText(ConfigPath, defaultConfig);
         }
 
-        var data = File.ReadAllText(Path.Combine("UserData", "AccuracyIndicator.cfg"));
+        var data = File.ReadAllText(ConfigPath);
         Settings = TomletMain.To<Data>(data);
     }
-}
 
-public class Data
-{
-    [TomlPrecedingComment("Whether show Mean Delay in Victory screen")]
-    internal readonly bool ShowMeanDelay;
-
-    public Data()
-    {
-    }
-
-    internal Data(bool showMeanDelay) => ShowMeanDelay = showMeanDelay;
+    public static void SaveData() => File.WriteAllText(ConfigPath, TomletMain.TomlStringFrom(Settings));
 }
