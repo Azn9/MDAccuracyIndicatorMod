@@ -3,7 +3,7 @@ using UnityEngine.AddressableAssets;
 namespace AccuracyIndicator.Indicator;
 
 [RegisterTypeInIl2Cpp]
-internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
+internal class VictoryIndicator : MonoBehaviour
 {
     private readonly Il2CppObjectList _antiGC = new();
     private GameObject _canvas;
@@ -12,6 +12,9 @@ internal class VictoryIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
     private Il2CppObjectList _report;
     private bool _setMeanDelay;
 
+    public VictoryIndicator(IntPtr intPtr) : base(intPtr)
+    {
+    }
 
     private void Start()
     {

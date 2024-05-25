@@ -3,7 +3,7 @@ using Object = Il2CppSystem.Object;
 namespace AccuracyIndicator.Indicator;
 
 [RegisterTypeInIl2Cpp]
-public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
+public class InGameIndicator : MonoBehaviour
 {
     private static readonly float DefaultY = -ConvertHeightFrom1080P(420);
 
@@ -16,6 +16,10 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
     private float _pausedTime;
     private float _totalDelay;
     private int _totalHits;
+
+    public InGameIndicator(IntPtr intPtr) : base(intPtr)
+    {
+    }
 
     private void Start()
     {
@@ -74,7 +78,7 @@ public class InGameIndicator(IntPtr intPtr) : MonoBehaviour(intPtr)
         var totalDelay = 0f;
         var countDelay = 0;
 
-        List<Object> toRemove = [];
+        List<Object> toRemove = new List<Object>();
 
         foreach (var o in _hitEntries)
         {
